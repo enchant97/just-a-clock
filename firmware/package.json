@@ -1,0 +1,9 @@
+{
+    "urls":[
+        ["main.py", "github:enchant97/just-a-clock/firmware/main.py"]
+    ],
+    "deps": [
+        "github:smittytone/HT16K33-Python@0060f540d57798bf0c8f107a2338ec276de0c48d"
+    ],
+    "version": "0.0.0"
+}
