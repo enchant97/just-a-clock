@@ -1,5 +1,38 @@
+from time import gmtime
+from ht16k33 import HT16K33SegmentBig
+from machine import I2C, Timer
+
+display = HT16K33SegmentBig(I2C(0))
+
+
+def into_digits(value: int):
+    tens = value // 10
+    ones = value % 10
+    return tens, ones
+
+
+def update_display_callback(*_):
+    now = gmtime()
+    hour_digits = into_digits(now[3])
+    minute_digits = into_digits(now[4])
+
+    display.clear()
+    display.set_colon(0x02)
+    display.set_number(hour_digits[0], 0)
+    display.set_number(hour_digits[1], 1)
+    display.set_number(minute_digits[0], 2)
+    display.set_number(minute_digits[1], 3)
+    display.draw()
+
+
 def main():
-    pass
+    display.set_brightness(0)
+    display.clear()
+    display.draw()
+
+    t = Timer()
+    t.init(mode=Timer.PERIODIC, period=60_000, callback=update_display_callback)
+    update_display_callback()
 
 
 if __name__ == "__main__":
