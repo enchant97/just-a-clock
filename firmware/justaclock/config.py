@@ -15,15 +15,15 @@ class ConfigHandler:
         try:
             self.restore_defaults()
             with open(self._fp, "r") as fo:
-                self.current = json.load(fo)
+                self._current = json.load(fo)
         except Exception:
             pass
 
     def write(self):
         with open(self._fp, "w") as fo:
-            json.dump(self.current, fo)
+            json.dump(self._current, fo)
 
-    def current(self):
+    def current(self) -> dict:
         return self._current
 
 

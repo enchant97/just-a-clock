@@ -69,8 +69,9 @@ class TimeSyncHandler:
     async def run(self):
         while True:
             delay = 6 * 3600
-            if self._enable_net():
+            if await self._enable_net():
                 try:
+                    print("LOG starting time sync")
                     self._state = TimeSyncHandler.STATE_SYNCING
                     ntptime.host = self._network_config.current().get(
                         "ntp", "pool.ntp.org"
@@ -78,9 +79,11 @@ class TimeSyncHandler:
                     ntptime.settime()
                     self._last_sync = time.time()
                     self._state = TimeSyncHandler.STATE_SYNCED
+                    print("LOG time synced")
                 except Exception:
                     self._state = TimeSyncHandler.STATE_UNSYNCED
                     delay = 600
+                    print("LOG time sync failed")
                 finally:
                     self._disable_net()
 
