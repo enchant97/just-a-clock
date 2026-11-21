@@ -5,6 +5,7 @@ from machine import I2C, Timer
 
 from justaclock.com import ComHandler
 from justaclock.config import SystemConfigHandler, NetworkConfigHandler
+from justaclock.time_sync import TimeSyncHandler
 
 
 display = HT16K33SegmentBig(I2C(0))
@@ -48,9 +49,15 @@ async def main():
             system_config,
         ).run()
     )
+    sync_task = asyncio.create_task(
+        TimeSyncHandler(
+            network_config,
+            system_config,
+        ).run()
+    )
 
     try:
-        asyncio.gather(com_task)
+        await asyncio.gather(com_task, sync_task)
     except asyncio.CancelledError:
         pass
     finally:
