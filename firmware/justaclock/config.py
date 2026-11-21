@@ -1,15 +1,18 @@
 import json
 
-from justaclock.constants import NETWORK_CONFIG_PATH, SYSTEM_CONFIG_PATH
+from justaclock.constants import CONFIG_PATH
 
 
 class ConfigHandler:
-    def __init__(self, fp: str) -> None:
+    def __init__(self) -> None:
         self._current = {}
-        self._fp = fp
+        self._fp = CONFIG_PATH
 
     def restore_defaults(self):
-        pass
+        self._current["ssid"] = None
+        self._current["key"] = None
+        self._current["hostname"] = None
+        self._current["ntp"] = "pool.ntp.org"
 
     def read(self):
         try:
@@ -25,22 +28,3 @@ class ConfigHandler:
 
     def current(self) -> dict:
         return self._current
-
-
-class SystemConfigHandler(ConfigHandler):
-    def __init__(self):
-        super().__init__(SYSTEM_CONFIG_PATH)
-
-    def restore_defaults(self):
-        pass
-
-
-class NetworkConfigHandler(ConfigHandler):
-    def __init__(self):
-        super().__init__(NETWORK_CONFIG_PATH)
-
-    def restore_defaults(self):
-        self._current["ssid"] = None
-        self._current["key"] = None
-        self._current["hostname"] = None
-        self._current["ntp"] = "pool.ntp.org"

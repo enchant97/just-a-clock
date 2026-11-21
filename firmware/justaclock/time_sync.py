@@ -3,7 +3,7 @@ import time
 import ntptime
 import network
 
-from justaclock.config import NetworkConfigHandler, SystemConfigHandler
+from justaclock.config import ConfigHandler
 
 
 class TimeSyncHandler:
@@ -11,13 +11,8 @@ class TimeSyncHandler:
     STATE_SYNCING = "SYNCING"
     STATE_SYNCED = "SYNCED"
 
-    def __init__(
-        self,
-        network_config: NetworkConfigHandler,
-        system_config: SystemConfigHandler,
-    ):
-        self._network_config = network_config
-        self._system_config = system_config
+    def __init__(self, config: ConfigHandler):
+        self._config = config
         self._last_sync = None
         self._state = TimeSyncHandler.STATE_UNSYNCED
         self._wlan = network.WLAN(network.STA_IF)
@@ -34,7 +29,7 @@ class TimeSyncHandler:
 
         if not wlan.isconnected():
             wlan.config(pm=network.WLAN.PM_PERFORMANCE)
-            config = self._network_config.current()
+            config = self._config.current()
             if hostname := config.get("hostname"):
                 network.hostname(hostname)
             else:
@@ -73,9 +68,7 @@ class TimeSyncHandler:
                 try:
                     print("LOG starting time sync")
                     self._state = TimeSyncHandler.STATE_SYNCING
-                    ntptime.host = self._network_config.current().get(
-                        "ntp", "pool.ntp.org"
-                    )
+                    ntptime.host = self._config.current().get("ntp", "pool.ntp.org")
                     ntptime.settime()
                     self._last_sync = time.time()
                     self._state = TimeSyncHandler.STATE_SYNCED

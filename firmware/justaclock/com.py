@@ -1,17 +1,15 @@
 import sys
 from asyncio import StreamReader
 
-from justaclock.config import NetworkConfigHandler, SystemConfigHandler
+from justaclock.config import ConfigHandler
 
 
 class ComHandler:
     def __init__(
         self,
-        network_config: NetworkConfigHandler,
-        system_config: SystemConfigHandler,
+        config: ConfigHandler,
     ):
-        self._network_config = network_config
-        self._system_config = system_config
+        self._config = config
         self._handlers = {
             "NET.SSID.SET": self._cmd_set_net_ssid,
             "NET.KEY.SET": self._cmd_set_net_key,
@@ -45,33 +43,33 @@ class ComHandler:
                 print(f"ERR incorrect command '{cmd_token}'")
 
     def _cmd_flush_net(self, arg: str):
-        self._network_config.write()
+        self._config.write()
         print("DATA WRITTEN")
 
     def _cmd_reload_net(self, arg: str):
-        self._network_config.read()
+        self._config.read()
         print("DATA READ")
 
     def _cmd_set_net_ssid(self, arg: str):
-        self._network_config.current()["ssid"] = arg
+        self._config.current()["ssid"] = arg
         print("SET '{arg}'")
 
     def _cmd_set_net_key(self, arg: str):
-        self._network_config.current()["key"] = arg
+        self._config.current()["key"] = arg
         print("SET 'redacted'")
 
     def _cmd_get_net_hostname(self, arg: str):
-        hostname = self._network_config.current()["hostname"]
+        hostname = self._config.current()["hostname"]
         print(f"GET '{hostname}'")
 
     def _cmd_set_net_hostname(self, arg: str):
-        self._network_config.current()["hostname"] = arg
+        self._config.current()["hostname"] = arg
         print(f"SET '{arg}'")
 
     def _cmd_get_net_ntp(self, arg: str):
-        ntp = self._network_config.current()["ntp"]
+        ntp = self._config.current()["ntp"]
         print(f"GET '{ntp}'")
 
     def _cmd_set_net_ntp(self, arg: str):
-        self._network_config.current()["ntp"] = arg
+        self._config.current()["ntp"] = arg
         print(f"SET '{arg}'")

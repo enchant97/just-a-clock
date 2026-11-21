@@ -4,7 +4,7 @@ from ht16k33 import HT16K33SegmentBig
 from machine import I2C, Timer
 
 from justaclock.com import ComHandler
-from justaclock.config import SystemConfigHandler, NetworkConfigHandler
+from justaclock.config import ConfigHandler
 from justaclock.time_sync import TimeSyncHandler
 
 
@@ -40,21 +40,17 @@ async def main():
     t.init(mode=Timer.PERIODIC, period=60_000, callback=update_display_callback)
     update_display_callback()
 
-    network_config = NetworkConfigHandler()
-    network_config.read()
-    system_config = SystemConfigHandler()
-    system_config.read()
+    config = ConfigHandler()
+    config.read()
 
     com_task = asyncio.create_task(
         ComHandler(
-            network_config,
-            system_config,
+            config,
         ).run()
     )
     sync_task = asyncio.create_task(
         TimeSyncHandler(
-            network_config,
-            system_config,
+            config,
         ).run()
     )
 
