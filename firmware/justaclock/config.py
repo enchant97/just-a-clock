@@ -8,15 +8,8 @@ class ConfigHandler:
         self._current = {}
         self._fp = CONFIG_PATH
 
-    def restore_defaults(self):
-        self._current["ssid"] = None
-        self._current["key"] = None
-        self._current["hostname"] = None
-        self._current["ntp"] = "pool.ntp.org"
-
     def read(self):
         try:
-            self.restore_defaults()
             with open(self._fp, "r") as fo:
                 self._current = json.load(fo)
         except Exception:
