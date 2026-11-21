@@ -3,7 +3,7 @@ import time
 import ntptime
 import network
 
-from firmware.justaclock.config import NetworkConfigHandler, SystemConfigHandler
+from justaclock.config import NetworkConfigHandler, SystemConfigHandler
 
 
 class TimeSyncHandler:

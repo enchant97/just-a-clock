@@ -1,7 +1,7 @@
 import sys
 from asyncio import StreamReader
 
-from firmware.justaclock.config import NetworkConfigHandler, SystemConfigHandler
+from justaclock.config import NetworkConfigHandler, SystemConfigHandler
 
 
 class ComHandler:
