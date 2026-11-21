@@ -72,6 +72,9 @@ class TimeSyncHandler:
             if self._enable_net():
                 try:
                     self._state = TimeSyncHandler.STATE_SYNCING
+                    ntptime.host = self._network_config.current().get(
+                        "ntp", "pool.ntp.org"
+                    )
                     ntptime.settime()
                     self._last_sync = time.time()
                     self._state = TimeSyncHandler.STATE_SYNCED

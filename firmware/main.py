@@ -41,7 +41,9 @@ async def main():
     update_display_callback()
 
     network_config = NetworkConfigHandler()
+    network_config.read()
     system_config = SystemConfigHandler()
+    system_config.read()
 
     com_task = asyncio.create_task(
         ComHandler(

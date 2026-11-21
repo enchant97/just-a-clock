@@ -8,9 +8,16 @@ class ConfigHandler:
         self._current = {}
         self._fp = fp
 
+    def restore_defaults(self):
+        pass
+
     def read(self):
-        with open(self._fp, "r") as fo:
-            self.current = json.load(fo)
+        try:
+            self.restore_defaults()
+            with open(self._fp, "r") as fo:
+                self.current = json.load(fo)
+        except Exception:
+            pass
 
     def write(self):
         with open(self._fp, "w") as fo:
@@ -24,7 +31,16 @@ class SystemConfigHandler(ConfigHandler):
     def __init__(self):
         super().__init__(SYSTEM_CONFIG_PATH)
 
+    def restore_defaults(self):
+        pass
+
 
 class NetworkConfigHandler(ConfigHandler):
     def __init__(self):
         super().__init__(NETWORK_CONFIG_PATH)
+
+    def restore_defaults(self):
+        self._current["ssid"] = None
+        self._current["key"] = None
+        self._current["hostname"] = None
+        self._current["ntp"] = "pool.ntp.org"
