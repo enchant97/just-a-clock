@@ -7,11 +7,11 @@ from firmware.justaclock.config import NetworkConfigHandler, SystemConfigHandler
 class ComHandler:
     def __init__(
         self,
-        system_config: SystemConfigHandler,
         network_config: NetworkConfigHandler,
+        system_config: SystemConfigHandler,
     ):
-        self._system_config = system_config
         self._network_config = network_config
+        self._system_config = system_config
         self._handlers = {
             "NET.SSID.SET": self._cmd_set_net_ssid,
             "NET.KEY.SET": self._cmd_set_net_key,
