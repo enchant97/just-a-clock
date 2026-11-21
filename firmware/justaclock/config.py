@@ -1,6 +1,12 @@
 import json
+from micropython import const
 
-from justaclock.constants import CONFIG_PATH
+from justaclock.constants import CONFIG_PATH, DEFAULT_HOSTNAME, DEFAULT_NTP_SERVER
+
+KEY_NET_HOSTNAME = const("NET.HOSTNAME")
+KEY_NET_WLAN_SSID = const("NET.WLAN.SSID")
+KEY_NET_WLAN_PASSWORD = const("NET.WLAN.PASSWORD")
+KEY_NTP_SERVER_1 = const("NTP.SERVER.1")
 
 
 class ConfigHandler:
@@ -21,3 +27,19 @@ class ConfigHandler:
 
     def current(self) -> dict:
         return self._current
+
+    @property
+    def net_hostname(self) -> str:
+        return self._current.get(KEY_NET_HOSTNAME, DEFAULT_HOSTNAME)
+
+    @property
+    def net_wlan_ssid(self) -> str | None:
+        return self._current.get(KEY_NET_WLAN_SSID)
+
+    @property
+    def net_wlan_password(self) -> str | None:
+        return self._current.get(KEY_NET_WLAN_PASSWORD)
+
+    @property
+    def ntp_server_1(self) -> str:
+        return self._current.get(KEY_NTP_SERVER_1, DEFAULT_NTP_SERVER)

@@ -1,7 +1,13 @@
 import sys
 from asyncio import StreamReader
 
-from justaclock.config import ConfigHandler
+from firmware.justaclock.config import (
+    KEY_NET_HOSTNAME,
+    KEY_NET_WLAN_PASSWORD,
+    KEY_NET_WLAN_SSID,
+    KEY_NTP_SERVER_1,
+    ConfigHandler,
+)
 
 
 class ComHandler:
@@ -11,14 +17,14 @@ class ComHandler:
     ):
         self._config = config
         self._handlers = {
-            "NET.SSID.SET": self._cmd_set_net_ssid,
-            "NET.KEY.SET": self._cmd_set_net_key,
-            "NET.HOSTNAME.GET": self._cmd_get_net_hostname,
-            "NET.HOSTNAME.SET": self._cmd_set_net_hostname,
-            "NET.NTP.GET": self._cmd_get_net_ntp,
-            "NET.NTP.SET": self._cmd_set_net_ntp,
-            "NET.FLUSH": self._cmd_flush_net,
-            "NET.RELOAD": self._cmd_reload_net,
+            "FLUSH": self._cmd_flush_net,
+            "RELOAD": self._cmd_reload_net,
+            f"{KEY_NET_HOSTNAME}.GET": self._cmd_get_net_hostname,
+            f"{KEY_NET_HOSTNAME}.SET": self._cmd_set_net_hostname,
+            f"{KEY_NET_WLAN_SSID}.SET": self._cmd_set_net_wlan_ssid,
+            f"{KEY_NET_WLAN_PASSWORD}.SET": self._cmd_set_net_wlan_pw,
+            f"{KEY_NTP_SERVER_1}.GET": self._cmd_get_net_ntp,
+            f"{KEY_NTP_SERVER_1}.SET": self._cmd_set_net_ntp,
         }
 
     async def run(self):
@@ -50,26 +56,26 @@ class ComHandler:
         self._config.read()
         print("DATA READ")
 
-    def _cmd_set_net_ssid(self, arg: str):
-        self._config.current()["ssid"] = arg
-        print("SET '{arg}'")
-
-    def _cmd_set_net_key(self, arg: str):
-        self._config.current()["key"] = arg
-        print("SET 'redacted'")
-
     def _cmd_get_net_hostname(self, arg: str):
-        hostname = self._config.current()["hostname"]
+        hostname = self._config.net_hostname
         print(f"GET '{hostname}'")
 
     def _cmd_set_net_hostname(self, arg: str):
-        self._config.current()["hostname"] = arg
+        self._config.current()[KEY_NET_HOSTNAME] = arg
         print(f"SET '{arg}'")
 
+    def _cmd_set_net_wlan_ssid(self, arg: str):
+        self._config.current()[KEY_NET_WLAN_SSID] = arg
+        print(f"SET '{arg}'")
+
+    def _cmd_set_net_wlan_pw(self, arg: str):
+        self._config.current()[KEY_NET_WLAN_PASSWORD] = arg
+        print("SET 'redacted'")
+
     def _cmd_get_net_ntp(self, arg: str):
-        ntp = self._config.current()["ntp"]
+        ntp = self._config.ntp_server_1
         print(f"GET '{ntp}'")
 
     def _cmd_set_net_ntp(self, arg: str):
-        self._config.current()["ntp"] = arg
+        self._config.current()[KEY_NTP_SERVER_1] = arg
         print(f"SET '{arg}'")

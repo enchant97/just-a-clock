@@ -29,15 +29,12 @@ class TimeSyncHandler:
 
         if not wlan.isconnected():
             wlan.config(pm=network.WLAN.PM_PERFORMANCE)
-            config = self._config.current()
-            if hostname := config.get("hostname"):
-                network.hostname(hostname)
-            else:
-                network.hostname("justaclock")
-            ssid = config.get("ssid")
-            key = config.get("key")
+            config = self._config
+            network.hostname(config.net_hostname)
+            ssid = config.net_wlan_ssid
+            key = config.net_wlan_password
             if ssid is None or key is None:
-                print("LOG wlan ssid or key not set")
+                print("LOG wlan ssid or password not set")
                 return False
             wlan.connect(
                 ssid,
@@ -62,13 +59,14 @@ class TimeSyncHandler:
             wlan.active(False)
 
     async def run(self):
+        config = self._config
         while True:
             delay = 6 * 3600
             if await self._enable_net():
                 try:
                     print("LOG starting time sync")
                     self._state = TimeSyncHandler.STATE_SYNCING
-                    ntptime.host = self._config.current().get("ntp", "pool.ntp.org")
+                    ntptime.host = config.ntp_server_1
                     ntptime.settime()
                     self._last_sync = time.time()
                     self._state = TimeSyncHandler.STATE_SYNCED
