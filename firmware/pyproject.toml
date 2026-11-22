@@ -1,0 +1,19 @@
+[project]
+name = "justaclock"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "micropython-rp2-stubs>=1.29.0.post1",
+    "mpremote>=1.29.0",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+ignore = [
+    "T201",  # disallow print
+]

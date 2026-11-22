@@ -72,7 +72,7 @@ class TimeSyncHandler:
                     self._last_sync = time.time()
                     self._state = TimeSyncHandler.STATE_SYNCED
                     print("LOG time synced")
-                except Exception:
+                except Exception:  # noqa: BLE001 - ntptime may raise an exception without specific type
                     self._state = TimeSyncHandler.STATE_UNSYNCED
                     delay = 600
                     print("LOG time sync failed")
