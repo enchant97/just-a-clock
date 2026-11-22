@@ -108,7 +108,8 @@ class ConfigHandler:
     @net_hostname.setter
     def net_hostname(self, value: str | None):
         if value is not None and len(value) == 0:
-            raise ValidationError("net_hostname must not be empty")
+            msg = "net_hostname must not be empty"
+            raise ValidationError(msg)
         self._net_hostname = value
 
     @property
@@ -118,7 +119,8 @@ class ConfigHandler:
     @net_wlan_ssid.setter
     def net_wlan_ssid(self, value: str | None):
         if value is not None and len(value) == 0:
-            raise ValidationError("net_wlan_ssid must not be empty")
+            msg = "net_wlan_ssid must not be empty"
+            raise ValidationError(msg)
         self._net_wlan_ssid = value
 
     @property
@@ -128,7 +130,8 @@ class ConfigHandler:
     @net_wlan_password.setter
     def net_wlan_password(self, value: str | None):
         if value is not None and len(value) == 0:
-            raise ValidationError("net_wlan_password must not be empty")
+            msg = "net_wlan_password must not be empty"
+            raise ValidationError(msg)
         self._net_wlan_password = value
 
     @property
@@ -138,5 +141,6 @@ class ConfigHandler:
     @ntp_server_1.setter
     def ntp_server_1(self, value: str | None):
         if value is not None and len(value) == 0:
-            raise ValidationError("ntp_server_1 must not be empty")
+            msg = "ntp_server_1 must not be empty"
+            raise ValidationError(msg)
         self._ntp_server_1 = value

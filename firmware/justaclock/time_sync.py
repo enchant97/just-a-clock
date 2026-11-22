@@ -1,7 +1,8 @@
 import asyncio
 import time
-import ntptime
+
 import network
+import ntptime
 
 from justaclock.config import ConfigHandler
 

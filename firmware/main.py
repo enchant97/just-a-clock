@@ -1,12 +1,12 @@
 import asyncio
 from time import gmtime
+
 from ht16k33 import HT16K33SegmentBig
 from machine import I2C, Timer
 
 from justaclock.com import ComHandler
 from justaclock.config import ConfigHandler
 from justaclock.time_sync import TimeSyncHandler
-
 
 display = HT16K33SegmentBig(I2C(0))
 
