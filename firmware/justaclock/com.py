@@ -61,15 +61,15 @@ class ComHandler:
         print(f"GET '{hostname}'")
 
     def _cmd_set_net_hostname(self, arg: str):
-        self._config.current()[KEY_NET_HOSTNAME] = arg
+        self._config.net_hostname = arg
         print(f"SET '{arg}'")
 
     def _cmd_set_net_wlan_ssid(self, arg: str):
-        self._config.current()[KEY_NET_WLAN_SSID] = arg
+        self._config.net_wlan_ssid = arg
         print(f"SET '{arg}'")
 
     def _cmd_set_net_wlan_pw(self, arg: str):
-        self._config.current()[KEY_NET_WLAN_PASSWORD] = arg
+        self._config.net_wlan_password = arg
         print("SET 'redacted'")
 
     def _cmd_get_net_ntp(self, arg: str):
@@ -77,5 +77,5 @@ class ComHandler:
         print(f"GET '{ntp}'")
 
     def _cmd_set_net_ntp(self, arg: str):
-        self._config.current()[KEY_NTP_SERVER_1] = arg
+        self._config.ntp_server_1 = arg
         print(f"SET '{arg}'")
