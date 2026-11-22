@@ -1,7 +1,7 @@
 import sys
 from asyncio import StreamReader
 
-from firmware.justaclock.config import (
+from justaclock.config import (
     KEY_NET_HOSTNAME,
     KEY_NET_WLAN_PASSWORD,
     KEY_NET_WLAN_SSID,
