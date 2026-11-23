@@ -21,6 +21,14 @@
             "github:enchant97/just-a-clock/firmware/justaclock/constants.py"
         ],
         [
+            "justaclock/main.py",
+            "github:enchant97/just-a-clock/firmware/justaclock/main.py"
+        ],
+        [
+            "justaclock/state.py",
+            "github:enchant97/just-a-clock/firmware/justaclock/state.py"
+        ],
+        [
             "justaclock/time_sync.py",
             "github:enchant97/just-a-clock/firmware/justaclock/time_sync.py"
         ]

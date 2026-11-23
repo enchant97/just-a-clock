@@ -23,7 +23,7 @@ async def read_line_echo(reader):
         if c in (0x0D, 0x0A):  # Enter (CR or LF)
             sys.stdout.write("\r\n")
             return bytes(buf)
-        elif c in (0x08, 0x7F):  # Backspace / DEL
+        if c in (0x08, 0x7F):  # Backspace / DEL
             if buf:
                 buf = buf[:-1]
                 sys.stdout.write("\x08 \x08")  # back, overwrite, back
