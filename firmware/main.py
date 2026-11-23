@@ -47,6 +47,8 @@ def update_display_callback(*_):
 
     last_display_update = display_update
 
+    display.clear()
+
     if not (time_state & TIME_STATE_UNSYNCED):
         display.set_number(hour_digits[0], 0)
         display.set_number(hour_digits[1], 1)
@@ -60,7 +62,6 @@ def update_display_callback(*_):
     elif time_state & TIME_STATE_STALE:
         display.set_colon(0x04)
 
-    display.clear()
     display.draw()
 
 
