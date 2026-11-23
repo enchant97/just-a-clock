@@ -10,6 +10,30 @@ from justaclock.config import (
 )
 
 
+async def read_line_echo(reader):
+    buf = bytearray()
+    while True:
+        ch = await reader.read(1)
+        if not ch:
+            return None
+        if isinstance(ch, str):
+            ch = ch.encode()
+        c = ch[0]
+
+        if c in (0x0D, 0x0A):  # Enter (CR or LF)
+            sys.stdout.write("\r\n")
+            return bytes(buf)
+        elif c in (0x08, 0x7F):  # Backspace / DEL
+            if buf:
+                buf = buf[:-1]
+                sys.stdout.write("\x08 \x08")  # back, overwrite, back
+        elif c >= 0x20:  # printable
+            buf.append(c)
+            # NOTE this only handles ASCII character input,
+            #      UTF-8 multi-byte will not work
+            sys.stdout.write(ch.decode())
+
+
 class ComHandler:
     def __init__(
         self,
@@ -31,8 +55,8 @@ class ComHandler:
         reader = StreamReader(sys.stdin)
 
         while True:
-            raw = await reader.readline()
-            if not raw:
+            raw = await read_line_echo(reader)
+            if raw is None:
                 break
 
             line = raw.decode().strip()
