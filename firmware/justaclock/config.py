@@ -2,14 +2,12 @@ import os
 
 from micropython import const
 
-from justaclock.constants import (
-    DEFAULT_HOSTNAME,
-    DEFAULT_NTP_SERVER,
-)
+_CONFIG_PATH = const("/config.conf")
 
-CONFIG_PATH = const("/config.conf")
+_MAX_CONFIG_LINE_SIZE = const(256)
 
-MAX_CONFIG_LINE_SIZE = const(256)
+_DEFAULT_HOSTNAME = const("justaclock")
+_DEFAULT_NTP_SERVER = const("pool.ntp.org")
 
 KEY_NET_HOSTNAME = const("NET.HOSTNAME")
 KEY_NET_WLAN_SSID = const("NET.WLAN.SSID")
@@ -82,11 +80,11 @@ class ConfigHandler:
 
     def read(self):
         try:
-            with open(CONFIG_PATH, "rb") as fo:
+            with open(_CONFIG_PATH, "rb") as fo:
                 handlers = self._set_handlers
                 for raw_line in line_reader(
                     fo,
-                    line_max=MAX_CONFIG_LINE_SIZE,
+                    line_max=_MAX_CONFIG_LINE_SIZE,
                     chunk_size=64,
                 ):
                     line = bytes(raw_line).decode()
@@ -98,17 +96,17 @@ class ConfigHandler:
             pass
 
     def write(self):
-        tmp = f"{CONFIG_PATH}.tmp"
+        tmp = f"{_CONFIG_PATH}.tmp"
         lines = (f"{k} {v}\n" for k, v in self.items() if v is not None)
         with open(tmp, "w") as fo:
             for line in lines:
                 fo.write(line)
-        os.remove(CONFIG_PATH)
-        os.rename(tmp, CONFIG_PATH)
+        os.remove(_CONFIG_PATH)
+        os.rename(tmp, _CONFIG_PATH)
 
     @property
     def net_hostname(self) -> str:
-        return self._net_hostname or DEFAULT_HOSTNAME
+        return self._net_hostname or _DEFAULT_HOSTNAME
 
     @net_hostname.setter
     def net_hostname(self, value: str | None):
@@ -141,7 +139,7 @@ class ConfigHandler:
 
     @property
     def ntp_server_1(self) -> str:
-        return self._ntp_server_1 or DEFAULT_NTP_SERVER
+        return self._ntp_server_1 or _DEFAULT_NTP_SERVER
 
     @ntp_server_1.setter
     def ntp_server_1(self, value: str | None):
