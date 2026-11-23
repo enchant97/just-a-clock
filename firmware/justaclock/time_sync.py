@@ -1,28 +1,18 @@
 import asyncio
-import time
 
 import network
 import ntptime
 
 from justaclock.config import ConfigHandler
+from justaclock.constants import TIME_SYNC_INTERVAL_SECS
+from justaclock.state import GlobalState
 
 
 class TimeSyncHandler:
-    STATE_UNSYNCED = "UNSYNCED"
-    STATE_SYNCING = "SYNCING"
-    STATE_SYNCED = "SYNCED"
-
-    def __init__(self, config: ConfigHandler):
+    def __init__(self, config: ConfigHandler, state: GlobalState):
         self._config = config
-        self._last_sync = None
-        self._state = TimeSyncHandler.STATE_UNSYNCED
+        self._state = state
         self._wlan = network.WLAN(network.STA_IF)
-
-    def last_sync(self) -> float | None:
-        return self._last_sync
-
-    def state(self):
-        return self._state
 
     async def _enable_net(self) -> bool:
         wlan = self._wlan
@@ -62,18 +52,17 @@ class TimeSyncHandler:
     async def run(self):
         config = self._config
         while True:
-            delay = 6 * 3600
+            delay = TIME_SYNC_INTERVAL_SECS
             if await self._enable_net():
                 try:
                     print("LOG starting time sync")
-                    self._state = TimeSyncHandler.STATE_SYNCING
+                    self._state.set_syncing()
                     ntptime.host = config.ntp_server_1
                     ntptime.settime()
-                    self._last_sync = time.time()
-                    self._state = TimeSyncHandler.STATE_SYNCED
+                    self._state.set_synced()
                     print("LOG time synced")
                 except Exception:  # noqa: BLE001 - ntptime may raise an exception without specific type
-                    self._state = TimeSyncHandler.STATE_UNSYNCED
+                    self._state.set_syncing(False)
                     delay = 600
                     print("LOG time sync failed")
                 finally:

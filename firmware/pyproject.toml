@@ -15,5 +15,6 @@ line-length = 100
 
 [tool.ruff.lint]
 ignore = [
-    "T201",  # disallow print
+    "T201",  # allow print()
+    "FURB122",  # allow looped write() (writelines() does not exist)
 ]

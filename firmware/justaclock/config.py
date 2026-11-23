@@ -71,6 +71,10 @@ class ConfigHandler:
             KEY_NET_WLAN_PASSWORD: lambda: self.net_wlan_password,
             KEY_NTP_SERVER_1: lambda: self.ntp_server_1,
         }
+        self._net_hostname = None
+        self._net_wlan_password = None
+        self._net_wlan_ssid = None
+        self._ntp_server_1 = None
 
     def items(self):
         for k, handler in self._get_handlers.items():
@@ -97,7 +101,8 @@ class ConfigHandler:
         tmp = f"{CONFIG_PATH}.tmp"
         lines = (f"{k} {v}\n" for k, v in self.items() if v is not None)
         with open(tmp, "w") as fo:
-            fo.writelines(lines)
+            for line in lines:
+                fo.write(line)
         os.remove(CONFIG_PATH)
         os.rename(tmp, CONFIG_PATH)
 
