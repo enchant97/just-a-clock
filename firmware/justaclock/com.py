@@ -6,6 +6,7 @@ from justaclock.config import (
     KEY_NET_WLAN_PASSWORD,
     KEY_NET_WLAN_SSID,
     KEY_NTP_SERVER_1,
+    KEY_NTP_SYNC_INTERVAL,
     ConfigHandler,
 )
 
@@ -49,6 +50,8 @@ class ComHandler:
             f"{KEY_NET_WLAN_PASSWORD}.SET": self._cmd_set_net_wlan_pw,
             f"{KEY_NTP_SERVER_1}.GET": self._cmd_get_net_ntp,
             f"{KEY_NTP_SERVER_1}.SET": self._cmd_set_net_ntp,
+            f"{KEY_NTP_SYNC_INTERVAL}.GET": self._cmd_get_ntp_sync_interval,
+            f"{KEY_NTP_SYNC_INTERVAL}.SET": self._cmd_set_ntp_sync_interval,
         }
 
     async def run(self):
@@ -102,4 +105,12 @@ class ComHandler:
 
     def _cmd_set_net_ntp(self, arg: str):
         self._config.ntp_server_1 = arg
+        print(f"SET '{arg}'")
+
+    def _cmd_get_ntp_sync_interval(self, arg: str):
+        interval = self._config.ntp_sync_interval
+        print(f"GET '{interval}'")
+
+    def _cmd_set_ntp_sync_interval(self, arg: str):
+        self._config.ntp_sync_interval = int(arg)
         print(f"SET '{arg}'")

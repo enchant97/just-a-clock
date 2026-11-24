@@ -19,8 +19,8 @@ from justaclock.time_sync import TimeSyncHandler
 DisplayWiring = namedtuple("DisplayWiring", ("i2c_bus", "i2c_address"))
 DisplayUpdate = namedtuple("DisplayUpdate", ("state", "h", "m"))
 
-display = None
-global_state = GlobalState()
+display: HT16K33SegmentBig
+global_state: GlobalState
 last_display_update = None
 
 
@@ -68,7 +68,7 @@ def update_display_callback(*_):
 
 
 async def run(display_wiring: DisplayWiring):
-    global display
+    global display, global_state
 
     display = HT16K33SegmentBig(display_wiring.i2c_bus, display_wiring.i2c_bus)
 
@@ -76,12 +76,14 @@ async def run(display_wiring: DisplayWiring):
     display.clear()
     display.draw()
 
+    config = ConfigHandler()
+    config.read()
+
+    global_state = GlobalState(config)
+
     t = Timer()
     t.init(mode=Timer.PERIODIC, period=1_000, callback=update_display_callback)
     update_display_callback()
-
-    config = ConfigHandler()
-    config.read()
 
     com_task = asyncio.create_task(
         ComHandler(

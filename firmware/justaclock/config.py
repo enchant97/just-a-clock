@@ -8,11 +8,13 @@ _MAX_CONFIG_LINE_SIZE = const(256)
 
 _DEFAULT_HOSTNAME = const("justaclock")
 _DEFAULT_NTP_SERVER = const("pool.ntp.org")
+_DEFAULT_NTP_SYNC_INTERVAL_HOURS = const(12)
 
 KEY_NET_HOSTNAME = const("NET.HOSTNAME")
 KEY_NET_WLAN_SSID = const("NET.WLAN.SSID")
 KEY_NET_WLAN_PASSWORD = const("NET.WLAN.PASSWORD")
 KEY_NTP_SERVER_1 = const("NTP.SERVER.1")
+KEY_NTP_SYNC_INTERVAL = const("NTP.SYNC-INTERVAL")
 
 
 def line_reader(stream, *, line_max: int, chunk_size: int):
@@ -53,6 +55,7 @@ class ConfigHandler:
         "_net_wlan_password",
         "_net_wlan_ssid",
         "_ntp_server_1",
+        "_ntp_sync_interval_hours",
         "_set_handlers",
     )
 
@@ -62,17 +65,20 @@ class ConfigHandler:
             KEY_NET_WLAN_SSID: lambda v: setattr(self, "net_wlan_ssid", v),
             KEY_NET_WLAN_PASSWORD: lambda v: setattr(self, "net_wlan_password", v),
             KEY_NTP_SERVER_1: lambda v: setattr(self, "ntp_server_1", v),
+            KEY_NTP_SYNC_INTERVAL: lambda v: setattr(self, "ntp_sync_interval_hours", v),
         }
         self._get_handlers = {
             KEY_NET_HOSTNAME: lambda: self.net_hostname,
             KEY_NET_WLAN_SSID: lambda: self.net_wlan_ssid,
             KEY_NET_WLAN_PASSWORD: lambda: self.net_wlan_password,
             KEY_NTP_SERVER_1: lambda: self.ntp_server_1,
+            KEY_NTP_SYNC_INTERVAL: lambda: self.ntp_sync_interval_hours,
         }
         self._net_hostname = None
         self._net_wlan_password = None
         self._net_wlan_ssid = None
         self._ntp_server_1 = None
+        self._ntp_sync_interval_hours = None
 
     def items(self):
         for k, handler in self._get_handlers.items():
@@ -147,3 +153,14 @@ class ConfigHandler:
             msg = "ntp_server_1 must not be empty"
             raise ValidationError(msg)
         self._ntp_server_1 = value
+
+    @property
+    def ntp_sync_interval_hours(self) -> int:
+        return self._ntp_sync_interval_hours or _DEFAULT_NTP_SYNC_INTERVAL_HOURS
+
+    @ntp_sync_interval_hours.setter
+    def ntp_sync_interval_hours(self, value: int):
+        if value <= 0:
+            self._ntp_sync_interval_hours = None
+        else:
+            self._ntp_sync_interval_hours = value

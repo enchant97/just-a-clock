@@ -11,6 +11,8 @@
 - `NET.WLAN.PASSWORD.SET the-password`
 - `NTP.SERVER.1.GET`
 - `NTP.SERVER.1.SET the-hostname`
+- `NTP.SYNC-INTERVAL.GET`
+- `NTP.SYNC-INTERVAL.SET hours`
 
 ## Access Python REPL
 Whilst connected over serial you can access the underlying Python REPL by pressing `CTRL+C`. After entering the REPL it will stop the "Just A Clock" firmware from running, it is best to disconnect and reconnect if you want to resume the original functionality.

@@ -4,7 +4,6 @@ import network
 import ntptime
 
 from justaclock.config import ConfigHandler
-from justaclock.constants import TIME_SYNC_INTERVAL_SECS
 from justaclock.state import GlobalState
 
 
@@ -52,7 +51,7 @@ class TimeSyncHandler:
     async def run(self):
         config = self._config
         while True:
-            delay = TIME_SYNC_INTERVAL_SECS
+            delay_secs = config.ntp_sync_interval_hours * 3600
             if await self._enable_net():
                 try:
                     print("LOG starting time sync")
@@ -63,9 +62,8 @@ class TimeSyncHandler:
                     print("LOG time synced")
                 except Exception:  # noqa: BLE001 - ntptime may raise an exception without specific type
                     self._state.set_syncing(False)
-                    delay = 600
                     print("LOG time sync failed")
                 finally:
                     self._disable_net()
 
-            await asyncio.sleep(delay)
+            await asyncio.sleep(delay_secs)
