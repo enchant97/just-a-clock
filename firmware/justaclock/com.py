@@ -1,6 +1,8 @@
 import sys
 from asyncio import StreamReader
 
+from micropython import const
+
 from justaclock.config import (
     KEY_NET_HOSTNAME,
     KEY_NET_WLAN_PASSWORD,
@@ -9,6 +11,9 @@ from justaclock.config import (
     KEY_NTP_SYNC_INTERVAL,
     ConfigHandler,
 )
+
+_OP_GET = const("GET")
+_OP_SET = const("SET")
 
 
 async def read_line_echo(reader):
@@ -44,14 +49,14 @@ class ComHandler:
         self._handlers = {
             "FLUSH": self._cmd_flush_net,
             "RELOAD": self._cmd_reload_net,
-            f"{KEY_NET_HOSTNAME}.GET": self._cmd_get_net_hostname,
-            f"{KEY_NET_HOSTNAME}.SET": self._cmd_set_net_hostname,
-            f"{KEY_NET_WLAN_SSID}.SET": self._cmd_set_net_wlan_ssid,
-            f"{KEY_NET_WLAN_PASSWORD}.SET": self._cmd_set_net_wlan_pw,
-            f"{KEY_NTP_SERVER_1}.GET": self._cmd_get_net_ntp,
-            f"{KEY_NTP_SERVER_1}.SET": self._cmd_set_net_ntp,
-            f"{KEY_NTP_SYNC_INTERVAL}.GET": self._cmd_get_ntp_sync_interval,
-            f"{KEY_NTP_SYNC_INTERVAL}.SET": self._cmd_set_ntp_sync_interval,
+            f"{KEY_NET_HOSTNAME}.{_OP_GET}": self._cmd_get_net_hostname,
+            f"{KEY_NET_HOSTNAME}.{_OP_SET}": self._cmd_set_net_hostname,
+            f"{KEY_NET_WLAN_SSID}.{_OP_SET}": self._cmd_set_net_wlan_ssid,
+            f"{KEY_NET_WLAN_PASSWORD}.{_OP_SET}": self._cmd_set_net_wlan_pw,
+            f"{KEY_NTP_SERVER_1}.{_OP_GET}": self._cmd_get_net_ntp,
+            f"{KEY_NTP_SERVER_1}.{_OP_SET}": self._cmd_set_net_ntp,
+            f"{KEY_NTP_SYNC_INTERVAL}.{_OP_GET}": self._cmd_get_ntp_sync_interval,
+            f"{KEY_NTP_SYNC_INTERVAL}.{_OP_SET}": self._cmd_set_ntp_sync_interval,
         }
 
     async def run(self):
