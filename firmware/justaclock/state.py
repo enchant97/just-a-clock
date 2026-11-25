@@ -50,3 +50,6 @@ class GlobalState:
         if self.is_syncing:
             state |= TIME_STATE_SYNCING
         return state
+
+    def enable_24h_display(self) -> bool:
+        return self._config.time_24_hour

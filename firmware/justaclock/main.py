@@ -4,6 +4,7 @@ from time import gmtime
 
 from ht16k33 import HT16K33SegmentBig
 from machine import Timer
+from micropython import const
 
 from justaclock.com import ComHandler
 from justaclock.config import ConfigHandler
@@ -15,6 +16,8 @@ from justaclock.state import (
     GlobalState,
 )
 from justaclock.time_sync import TimeSyncHandler
+
+_DISPLAY_UPDATE_INTERVAL_MS = const(100)
 
 DisplayWiring = namedtuple("DisplayWiring", ("i2c_bus", "i2c_address"))
 DisplayUpdate = namedtuple("DisplayUpdate", ("state", "h", "m"))
@@ -34,8 +37,13 @@ def update_display_callback(*_):
     global last_display_update
 
     time_state = global_state.time_state()
+    enable_24h = global_state.enable_24h_display()
+
     now = gmtime()
-    hour_digits = into_digits(now[3])
+
+    display_hour = now[3] if enable_24h else (now[3] % 12 or 12)
+
+    hour_digits = into_digits(display_hour)
     minute_digits = into_digits(now[4])
 
     display_update = DisplayUpdate(
@@ -82,7 +90,11 @@ async def run(display_wiring: DisplayWiring):
     global_state = GlobalState(config)
 
     t = Timer()
-    t.init(mode=Timer.PERIODIC, period=1_000, callback=update_display_callback)
+    t.init(
+        mode=Timer.PERIODIC,
+        period=_DISPLAY_UPDATE_INTERVAL_MS,
+        callback=update_display_callback,
+    )
     update_display_callback()
 
     com_task = asyncio.create_task(

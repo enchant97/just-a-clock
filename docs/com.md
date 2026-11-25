@@ -16,6 +16,8 @@ Until WLAN is setup, the device will not display any time. Other configuration v
 - `NTP.SERVER.1.SET the-hostname` - Set the NTP server 1
 - `NTP.SYNC-INTERVAL.GET` - Get the sync interval in hours
 - `NTP.SYNC-INTERVAL.SET hours` - Set the sync interval in hours, must be >= 1
+- `TIME.24-HOUR.GET` - Whether 24 hour time display is 12 hour or 24 hour
+- `TIME.24-HOUR.SET` - Set 24 hour time display TRUE/FALSE
 
 ## Access Python REPL
 Whilst connected over serial you can access the underlying Python REPL by pressing `CTRL+C`. After entering the REPL it will stop the "Just A Clock" firmware from running, it is best to disconnect and reconnect if you want to resume the original functionality.

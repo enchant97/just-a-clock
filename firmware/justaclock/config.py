@@ -15,6 +15,7 @@ KEY_NET_WLAN_SSID = const("NET.WLAN.SSID")
 KEY_NET_WLAN_PASSWORD = const("NET.WLAN.PASSWORD")
 KEY_NTP_SERVER_1 = const("NTP.SERVER.1")
 KEY_NTP_SYNC_INTERVAL = const("NTP.SYNC-INTERVAL")
+KEY_TIME_24_HOUR = const("TIME.24-HOUR")
 
 
 def line_reader(stream, *, line_max: int, chunk_size: int):
@@ -57,6 +58,7 @@ class ConfigHandler:
         "_ntp_server_1",
         "_ntp_sync_interval_hours",
         "_set_handlers",
+        "_time_24_hour",
     )
 
     def __init__(self) -> None:
@@ -66,6 +68,7 @@ class ConfigHandler:
             KEY_NET_WLAN_PASSWORD: lambda v: setattr(self, "net_wlan_password", v),
             KEY_NTP_SERVER_1: lambda v: setattr(self, "ntp_server_1", v),
             KEY_NTP_SYNC_INTERVAL: lambda v: setattr(self, "ntp_sync_interval_hours", v),
+            KEY_TIME_24_HOUR: lambda v: setattr(self, "time_24_hour", v),
         }
         self._get_handlers = {
             KEY_NET_HOSTNAME: lambda: self.net_hostname,
@@ -73,12 +76,14 @@ class ConfigHandler:
             KEY_NET_WLAN_PASSWORD: lambda: self.net_wlan_password,
             KEY_NTP_SERVER_1: lambda: self.ntp_server_1,
             KEY_NTP_SYNC_INTERVAL: lambda: self.ntp_sync_interval_hours,
+            KEY_TIME_24_HOUR: lambda: self.time_24_hour,
         }
         self._net_hostname = None
         self._net_wlan_password = None
         self._net_wlan_ssid = None
         self._ntp_server_1 = None
         self._ntp_sync_interval_hours = None
+        self._time_24_hour = None
 
     def items(self):
         for k, handler in self._get_handlers.items():
@@ -164,3 +169,11 @@ class ConfigHandler:
             self._ntp_sync_interval_hours = None
         else:
             self._ntp_sync_interval_hours = value
+
+    @property
+    def time_24_hour(self) -> bool:
+        return self._time_24_hour if self._time_24_hour is not None else True
+
+    @time_24_hour.setter
+    def time_24_hour(self, value: bool):
+        self._time_24_hour = value

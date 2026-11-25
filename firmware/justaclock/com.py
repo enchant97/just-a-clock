@@ -9,12 +9,16 @@ from justaclock.config import (
     KEY_NET_WLAN_SSID,
     KEY_NTP_SERVER_1,
     KEY_NTP_SYNC_INTERVAL,
+    KEY_TIME_24_HOUR,
     ConfigHandler,
 )
 
 _OP_GET = const("GET")
 _OP_SET = const("SET")
 _OP_HELP = const("HELP")
+
+_ENABLE_ARGS = const(("TRUE", "YES", "ENABLE", "1"))
+_DISABLE_ARGS = const(("FALSE", "NO", "DISABLE", "0"))
 
 
 async def read_line_echo(reader):
@@ -66,6 +70,9 @@ class ComHandler:
             f"{KEY_NTP_SYNC_INTERVAL}.{_OP_HELP}": self._cmd_help_ntp_sync_interval,
             f"{KEY_NTP_SYNC_INTERVAL}.{_OP_GET}": self._cmd_get_ntp_sync_interval,
             f"{KEY_NTP_SYNC_INTERVAL}.{_OP_SET}": self._cmd_set_ntp_sync_interval,
+            f"{KEY_TIME_24_HOUR}.{_OP_HELP}": self._cmd_help_time_24_hour,
+            f"{KEY_TIME_24_HOUR}.{_OP_GET}": self._cmd_get_time_24_hour,
+            f"{KEY_TIME_24_HOUR}.{_OP_SET}": self._cmd_set_time_24_hour,
         }
 
     async def run(self):
@@ -167,3 +174,27 @@ class ComHandler:
     def _cmd_set_ntp_sync_interval(self, arg: str):
         self._config.ntp_sync_interval_hours = int(arg)
         print(f"SET '{arg}'")
+
+    def _cmd_help_time_24_hour(self, arg: str):
+        print(f"{KEY_TIME_24_HOUR}.{_OP_GET}:")
+        print("Whether 24 hour time display is 12 hour or 24 hour")
+        print(f"{KEY_TIME_24_HOUR}.{_OP_SET}:")
+        print("Set 24 hour time display TRUE/FALSE")
+
+    def _cmd_get_time_24_hour(self, arg: str):
+        enabled = self._config.time_24_hour
+        if enabled:
+            print("GET '24 hour time'")
+        else:
+            print("GET '12 hour time'")
+
+    def _cmd_set_time_24_hour(self, arg: str):
+        arg = arg.upper()
+        if arg in _ENABLE_ARGS:
+            self._config.time_24_hour = True
+            print("SET '24 hour time'")
+        elif arg in _DISABLE_ARGS:
+            self._config.time_24_hour = False
+            print("SET '12 hour time'")
+        else:
+            print("ERR 'incorrect value'")
