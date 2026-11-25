@@ -78,7 +78,7 @@ def update_display_callback(*_):
 async def run(display_wiring: DisplayWiring):
     global display, global_state
 
-    display = HT16K33SegmentBig(display_wiring.i2c_bus, display_wiring.i2c_bus)
+    display = HT16K33SegmentBig(display_wiring.i2c_bus, display_wiring.i2c_address)
 
     display.set_brightness(0)
     display.clear()
