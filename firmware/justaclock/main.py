@@ -9,7 +9,6 @@ from micropython import const, schedule
 from justaclock.com import ComHandler
 from justaclock.config import ConfigHandler
 from justaclock.state import (
-    TIME_STATE_STALE,
     TIME_STATE_SYNCED,
     TIME_STATE_SYNCING,
     TIME_STATE_UNSYNCED,
@@ -59,7 +58,7 @@ def update_display_callback(_):
 
     display.clear()
 
-    if (time_state & TIME_STATE_UNSYNCED):
+    if time_state & TIME_STATE_UNSYNCED:
         display.set_character("-", 0)
         display.set_character("-", 1)
         display.set_character("-", 2)
