@@ -4,7 +4,7 @@ from time import gmtime
 
 from ht16k33 import HT16K33SegmentBig
 from machine import Timer
-from micropython import const
+from micropython import const, schedule
 
 from justaclock.com import ComHandler
 from justaclock.config import ConfigHandler
@@ -33,7 +33,7 @@ def into_digits(value: int):
     return tens, ones
 
 
-def update_display_callback(*_):
+def update_display_callback(_):
     global last_display_update
 
     time_state = global_state.time_state()
@@ -78,6 +78,10 @@ def update_display_callback(*_):
     display.draw()
 
 
+def tick_callback(t):
+    schedule(update_display_callback, 0)
+
+
 async def run(display_wiring: DisplayWiring):
     global display, global_state
 
@@ -96,9 +100,8 @@ async def run(display_wiring: DisplayWiring):
     t.init(
         mode=Timer.PERIODIC,
         period=_DISPLAY_UPDATE_INTERVAL_MS,
-        callback=update_display_callback,
+        callback=tick_callback,
     )
-    update_display_callback()
 
     com_task = asyncio.create_task(
         ComHandler(
