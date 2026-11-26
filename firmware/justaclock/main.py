@@ -59,7 +59,12 @@ def update_display_callback(*_):
 
     display.clear()
 
-    if not (time_state & TIME_STATE_UNSYNCED):
+    if (time_state & TIME_STATE_UNSYNCED):
+        display.set_character("-", 0)
+        display.set_character("-", 1)
+        display.set_character("-", 2)
+        display.set_character("-", 3)
+    else:
         display.set_number(hour_digits[0], 0)
         display.set_number(hour_digits[1], 1)
         display.set_number(minute_digits[0], 2)
@@ -69,8 +74,6 @@ def update_display_callback(*_):
         display.set_colon(0x02)
     elif time_state & TIME_STATE_SYNCING:
         display.set_colon(0x04 | 0x08)
-    elif time_state & TIME_STATE_STALE:
-        display.set_colon(0x04)
 
     display.draw()
 
