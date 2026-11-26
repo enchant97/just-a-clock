@@ -164,7 +164,8 @@ class ConfigHandler:
         return self._ntp_sync_interval_hours or _DEFAULT_NTP_SYNC_INTERVAL_HOURS
 
     @ntp_sync_interval_hours.setter
-    def ntp_sync_interval_hours(self, value: int):
+    def ntp_sync_interval_hours(self, value: int | str):
+        value = value if isinstance(value, int) else int(value)
         if value <= 0:
             self._ntp_sync_interval_hours = None
         else:
@@ -175,5 +176,14 @@ class ConfigHandler:
         return self._time_24_hour if self._time_24_hour is not None else True
 
     @time_24_hour.setter
-    def time_24_hour(self, value: bool):
-        self._time_24_hour = value
+    def time_24_hour(self, value: bool | str):
+        if isinstance(value, str):
+            value = value.upper()
+            if value == "TRUE":
+                self._time_24_hour = True
+            elif value == "FALSE":
+                self._time_24_hour = False
+            else:
+                raise ValidationError("time_24_hour must be either TRUE/FALSE")
+        else:
+            self._time_24_hour = value
